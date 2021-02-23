@@ -17,7 +17,7 @@ function [ msg13_char, msg13_num, msg5_char, msg5_num ] = parseDecodedMarCadastr
 %       !AIVDM,1,1,,A,15PLU6001IGIVNNCCMMrdpbj0<05,0*1A
 %       
 %       corresponding to line 1 in decoded file shipplotter180511.log:
-%       369567000;under way ;000°'; 8.9kt;33.736305N;120.236455W;273.9°;277°;25s; 180511 000040;serial#1(A)[1]
+%       369567000;under way ;000Â°'; 8.9kt;33.736305N;120.236455W;273.9Â°;277Â°;25s; 180511 000040;serial#1(A)[1]
 %
 %       decoded with http://www.maritec.co.za/tools/aisvdmvdodecoding/
 %
@@ -85,6 +85,7 @@ m16idx = find(nFields == 16);
  
 % parse message id 1-3
 m16Parts = regexp(rawData(m16idx),',','split');
+m16Parts = m16Parts(2:end);
 n16 = length(m16Parts);
 msg13_num = nan(n16,8); % dnum, MMSI, navStatus, SOG, lon, lat, COG, true heading
 msg13_char = cell(n16,1); % ship name
