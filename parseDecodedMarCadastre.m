@@ -85,7 +85,7 @@ m16idx = find(nFields == 16);
  
 % parse message id 1-3
 m16Parts = regexp(rawData(m16idx),',','split');
-m16Parts = m16Parts(2:end);
+m16Parts = m16Parts(2:end,:);% skip header row
 n16 = length(m16Parts);
 msg13_num = nan(n16,8); % dnum, MMSI, navStatus, SOG, lon, lat, COG, true heading
 msg13_char = cell(n16,1); % ship name
