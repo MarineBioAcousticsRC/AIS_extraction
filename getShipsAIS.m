@@ -112,6 +112,8 @@ for f = 1:NF
     gIdx = intersect(xIdx, yIdx);
     msg13_char = msg13_char(gIdx,:);
     msg13_num = msg13_num(gIdx,:);
+    msg5_char = msg5_char(gIdx, :); 
+    msg5_num = msg5_num(gIdx,:); 
     
     if ~isempty(msg13_num)
         shipTracks = struct;
