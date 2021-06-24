@@ -10,9 +10,9 @@ clear variables
 
 % SETTINGS
 % set AIS decoded file type:
-aisType = 3; % SBARC=1, Shipplotter=2, Marine Cadastre=3
+aisType = 4; % SBARC=1, Shipplotter=2, Marine Cadastre=3, Coast Guard = 4
 
-boundd_m = 20e3; % in [m] % <- Define your box here, in meters from center.
+boundd_m = 6e3; % in [m] % <- Define your box here, in meters from center.
 
 siteLatLon = [ 34.2755, -120.0185 ];%<-insert your site lat longs here, decimal degrees!
 
@@ -27,9 +27,9 @@ plotOn = 0; % if 1 = shows quick plot of transit, if 0 = no plots.
 % aisFileWildCard = 'shipplotter*.log'; %typical option 2 wildcard
 aisFileWildCard = 'AIS*.csv'; %typical option 3 wildcard
                     
-inDir = 'F:\MarineCadastre\CINMSonly'; % where the AIS files live
+inDir = 'D:\Ch.4_AmbientNoise\AmbientNoiseCINMS\AIS_ALL\CoastGuard'; % where the AIS files live
 
-outDir = 'F:\MarineCadastre\matFilesMarCad'; % where to save the extracted AIS info
+outDir = 'D:\Ch.4_AmbientNoise\AmbientNoiseCINMS\AIS_ALL\CoastGuard'; % where to save the extracted AIS info
 
 outName = 'siteB_AIS'; % string to start your output file names with
 %%%%%%%%%%%%%%%%%%%%%%%% Main Body %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -47,7 +47,7 @@ maxLon = [ siteLatLon(2)-boundd_m/p, siteLatLon(2)+boundd_m/p ];
 
 aisFiles = ls(fullfile(inDir,aisFileWildCard));
 
-if aisType>3 ||aisType<1
+if aisType>4 ||aisType<1
     error('unknown decoded AIS type')
 end
 
@@ -89,7 +89,8 @@ for f = 1:NF
                 [ msg13_char, msg13_num, msg5_char, msg5_num ] = parseDecodedShipplotter_180912(aisFile);
             case 3
                 [ msg13_char, msg13_num, msg5_char, msg5_num ] = parseDecodedMarCadastre(aisFile);
-                
+            case 4
+                [ msg13_char, msg13_num, msg5_char, msg5_num ] = parseDecodedCoastGuard(aisFile);
             otherwise
                 disp('unknown decoded AIS type')
         end
@@ -112,8 +113,6 @@ for f = 1:NF
     gIdx = intersect(xIdx, yIdx);
     msg13_char = msg13_char(gIdx,:);
     msg13_num = msg13_num(gIdx,:);
-    msg5_char = msg5_char(gIdx, :); 
-    msg5_num = msg5_num(gIdx,:); 
     
     if ~isempty(msg13_num)
         shipTracks = struct;
@@ -130,6 +129,9 @@ for f = 1:NF
                 case 2
                     shipTracksTemp.name = unique(msg5_char(s5idx,1));
                 case 3
+                    shipTracksTemp.name = unique(msg13_char(s13idx,1));
+                    s5idx = s13idx;
+                case 4
                     shipTracksTemp.name = unique(msg13_char(s13idx,1));
                     s5idx = s13idx;
             end
